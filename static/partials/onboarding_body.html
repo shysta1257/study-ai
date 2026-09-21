@@ -1,0 +1,131 @@
+<div class="page-header">
+  <div class="page-tag">Setup wizard</div>
+  <h1 class="page-title">Build your study plan</h1>
+  <p class="page-subtitle">Answer a few questions and we'll create your personalised roadmap</p>
+</div>
+<div class="steps-bar">
+  <div class="step-item active" id="step-item-1"><div class="step-bubble active" id="bubble-1">1</div><span class="step-label">Upload syllabus</span></div>
+  <div class="step-connector" id="conn-1"></div>
+  <div class="step-item" id="step-item-2"><div class="step-bubble" id="bubble-2">2</div><span class="step-label">Confirm topics</span></div>
+  <div class="step-connector" id="conn-2"></div>
+  <div class="step-item" id="step-item-3"><div class="step-bubble" id="bubble-3">3</div><span class="step-label">Exam schedule</span></div>
+  <div class="step-connector" id="conn-3"></div>
+  <div class="step-item" id="step-item-4"><div class="step-bubble" id="bubble-4">4</div><span class="step-label">Availability</span></div>
+</div>
+<!-- Step 1 -->
+<div class="step-panel active" id="panel-1">
+  <div class="card">
+    <div class="card-title">Upload your syllabus</div>
+    <div class="card-subtitle">We'll extract all topics and key dates automatically using AI</div>
+    <div class="syllabus-upload-zone" id="syllabus-zone" onclick="document.getElementById('syllabus-file').click()" style="border:2px dashed var(--border);border-radius:var(--radius-lg);padding:48px;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--bg2);margin-bottom:16px">
+      <div style="font-size:40px;margin-bottom:12px">📋</div>
+      <div style="font-family:var(--font-display);font-size:17px;font-weight:600;margin-bottom:6px">Drop your syllabus here</div>
+      <div style="color:var(--text-2);font-size:13px">PDF, DOCX, or PPT — max 20MB</div>
+      <input type="file" id="syllabus-file" accept=".pdf,.doc,.docx,.ppt,.pptx" style="display:none">
+    </div>
+    <div id="syllabus-loading" style="display:none">
+      <div style="display:flex;align-items:center;gap:12px;padding:20px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius)">
+        <div class="ai-spinner"></div>
+        <div>
+          <div style="font-size:14px;font-weight:500;color:var(--text)">Processing your syllabus…</div>
+          <div style="font-size:12px;color:var(--text-2);margin-top:2px" id="upload-progress-text2">Uploading and extracting topics with AI</div>
+        </div>
+      </div>
+    </div>
+    <div id="syllabus-done" style="display:none">
+      <div style="display:flex;align-items:center;gap:10px;padding:14px 18px;background:var(--accent-dim);border:1px solid var(--accent-border);border-radius:var(--radius);font-size:14px;color:var(--accent)">
+        ✅ Syllabus processed — <span id="syllabus-filename" style="font-weight:500"></span>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div style="font-size:13px;color:var(--text-2)">Don't have a file? <button class="btn btn-ghost btn-sm" onclick="useSampleSyllabus()" style="margin-left:8px">Use sample syllabus →</button></div>
+  </div>
+  <div class="step-nav"><span></span><button class="btn btn-primary" onclick="goToStep(2)">Next: Confirm topics →</button></div>
+</div>
+<!-- Step 2 -->
+<div class="step-panel" id="panel-2">
+  <div class="card">
+    <div class="card-title">Confirm your topics</div>
+    <div class="card-subtitle">Deselect irrelevant ones or add your own</div>
+    <div class="topics-grid" id="topics-grid"></div>
+    <div class="add-topic-row">
+      <input type="text" class="form-input" id="new-topic-input" placeholder="Add a topic manually…" style="flex:1" onkeydown="if(event.key==='Enter')addTopic()">
+      <button class="btn btn-secondary btn-sm" onclick="addTopic()">+ Add</button>
+    </div>
+  </div>
+  <div class="step-nav"><button class="btn btn-ghost" onclick="goToStep(1)">← Back</button><button class="btn btn-primary" onclick="goToStep(3)">Next: Exam schedule →</button></div>
+</div>
+<!-- Step 3 -->
+<div class="step-panel" id="panel-3">
+  <div class="card">
+    <div class="card-title">Exam schedule</div>
+    <div class="card-subtitle">Add your upcoming exams so we can prioritise your study plan</div>
+    <div class="exam-list" id="exam-list"></div>
+    <div class="add-exam-form">
+      <div class="add-exam-form-title">+ Add an exam</div>
+      <div class="exam-form-row">
+        <div class="form-group" style="margin-bottom:0"><label class="form-label">Subject name</label><input type="text" class="form-input" id="exam-name" placeholder="e.g. Data Structures"></div>
+        <div class="form-group" style="margin-bottom:0"><label class="form-label">Exam date</label><input type="date" class="form-input" id="exam-date"></div>
+      </div>
+      <div class="exam-form-row" style="margin-top:10px">
+        <div class="form-group" style="margin-bottom:0"><label class="form-label">Type</label>
+          <select class="form-select" id="exam-type">
+            <option value="final">Final exam</option><option value="midterm">Midterm</option>
+            <option value="quiz">Quiz / Test</option><option value="assignment">Assignment due</option>
+          </select>
+        </div>
+        <div style="display:flex;align-items:flex-end"><button class="btn btn-primary" onclick="addExam()" style="width:100%">Add exam</button></div>
+      </div>
+    </div>
+  </div>
+  <div class="step-nav"><button class="btn btn-ghost" onclick="goToStep(2)">← Back</button><button class="btn btn-primary" onclick="goToStep(4)">Next: Availability →</button></div>
+</div>
+<!-- Step 4 -->
+<div class="step-panel" id="panel-4">
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-title">Your study availability</div>
+    <div class="card-subtitle">Tell us when you're free — we'll build your roadmap around your schedule</div>
+    <div class="form-label" style="margin-bottom:10px">Which days can you study?</div>
+    <div class="days-grid">
+      <div class="day-chip selected" onclick="toggleDay(this,'Mon')">Mon</div>
+      <div class="day-chip selected" onclick="toggleDay(this,'Tue')">Tue</div>
+      <div class="day-chip selected" onclick="toggleDay(this,'Wed')">Wed</div>
+      <div class="day-chip selected" onclick="toggleDay(this,'Thu')">Thu</div>
+      <div class="day-chip selected" onclick="toggleDay(this,'Fri')">Fri</div>
+      <div class="day-chip" onclick="toggleDay(this,'Sat')">Sat</div>
+      <div class="day-chip" onclick="toggleDay(this,'Sun')">Sun</div>
+    </div>
+    <div class="divider"></div>
+    <div class="hours-row"><span class="hours-label">Hours per day</span><input type="number" class="hours-input" id="hours-per-day" value="3" min="1" max="12"><span style="font-size:13px;color:var(--text-2)">hours</span></div>
+    <div class="hours-row"><span class="hours-label">Session length</span>
+      <select class="form-select" style="max-width:180px" id="session-length">
+        <option value="25">25 min (Pomodoro)</option><option value="45" selected>45 min</option>
+        <option value="60">60 min</option><option value="90">90 min</option>
+      </select>
+    </div>
+    <div class="hours-row"><span class="hours-label">Study style</span>
+      <select class="form-select" style="max-width:180px" id="study-style">
+        <option value="balanced">Balanced — mix all subjects</option>
+        <option value="topic-deep">Topic deep-dives</option>
+        <option value="exam-priority">Exam-date priority</option>
+      </select>
+    </div>
+  </div>
+  <div class="step-nav"><button class="btn btn-ghost" onclick="goToStep(3)">← Back</button><button class="btn btn-primary btn-lg" onclick="generatePlan()">🚀 Generate my study plan</button></div>
+</div>
+<!-- Done -->
+<div class="step-panel" id="panel-done">
+  <div class="completion-card">
+    <div class="completion-icon">🎉</div>
+    <div class="completion-title">Your study plan is ready!</div>
+    <div class="completion-sub">We've built a personalised roadmap based on your syllabus, exams, and availability.</div>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <a href="/roadmap" class="btn btn-primary btn-lg">View my roadmap →</a>
+      <a href="/revision" class="btn btn-secondary btn-lg">Start revising</a>
+    </div>
+  </div>
+</div>
+<style>
+.syllabus-upload-zone:hover{border-color:var(--accent)!important;background:var(--accent-dim)!important}
+</style>
+<script src="/static/js/onboarding.js"></script>
